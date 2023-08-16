@@ -27,8 +27,8 @@ Predicting drug-target interaction (DTI) is a critical and rate-limiting step in
 # Dataset
 
  All data used in this paper are publicly available and can be accessed at:
- - Davis 和 KIBA: https://github.com/hkmztrk/DeepDTA/tree/master/data
- - BindingDB 和 BioSNAP: https://github.com/peizhenbai/DrugBAN/tree/main/datasets
+ - Davis and KIBA: https://github.com/hkmztrk/DeepDTA/tree/master/data
+ - BindingDB and BioSNAP: https://github.com/peizhenbai/DrugBAN/tree/main/datasets
 
 # Requirements
 
