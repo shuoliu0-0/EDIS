@@ -1,0 +1,14 @@
+test:
+  device_id: 1
+  batch_size: 501
+  block_num: 3
+  embedding_size: 33
+  filter_num: 32
+  out_dim: 1
+  num_experts: 3
+  hidden_size: 256
+  noisy_gating: True
+  pretrain_models: ./checkpoint/davis_model0.ckpt
+  pretrain_moe: ./checkpoint/davis_model1.ckpt
+data:
+  data_root: ./data/
