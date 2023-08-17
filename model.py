@@ -154,7 +154,7 @@ class EDISMOE(nn.Cell):
 
     def __init__(self, input_size, num_experts, hidden_size, noisy_gating, k,
                  block_num, embedding_size, filter_num, out_dim):
-        super(EDIS_MoE, self).__init__()
+        super(EDISMOE, self).__init__()
         self.noisy_gating = noisy_gating
         self.num_experts = num_experts
         self.input_size = input_size
