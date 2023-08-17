@@ -25,9 +25,9 @@ class GNNDataset:
     def __init__(self, fpath, train=True, config=None):
         self.batch_size = config.test.batch_size
         if train:
-            self.train_data = pickle.load(open(fpath + 'data_train.pkl', 'rb'))
+            self.train_data = pickle.load(open(fpath + '/data_train.pkl', 'rb'))
         else:
-            self.train_data = pickle.load(open(fpath + 'data_test.pkl', 'rb'))
+            self.train_data = pickle.load(open(fpath + '/data_test.pkl', 'rb'))
         self.train_index = None
         self.column_name = ["x_feature", "x_mask", "edge_attr", "edge_feature",
                             "edge_mask", "target_feature", "target_mask",
@@ -158,7 +158,7 @@ class GNNDataset:
             self.train_index.extend(index_all)
 
         dataset = GeneratorDataset(source=self, column_names=self.column_name,
-                                   num_parallel_workers=4, shuffle=False, max_rowsize=16)
+                                   num_parallel_workers=4, shuffle=True, max_rowsize=16)
         iteration = dataset.create_dict_iterator(num_epochs=num_epochs, output_numpy=True)
         return iteration
 
