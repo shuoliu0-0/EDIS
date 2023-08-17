@@ -14,6 +14,36 @@
 # ============================================================================
 """utils"""
 import numpy as np
+from pprint import pformat
+import yaml
+
+
+class Config:
+    """
+    Configuration namespace. Convert dictionary to members.
+    """
+    def __init__(self, cfg_dict):
+        for k, v in cfg_dict.items():
+            if isinstance(v, (list, tuple)):
+                setattr(self, k, [Config(x) if isinstance(x, dict) else x for x in v])
+            else:
+                setattr(self, k, Config(v) if isinstance(v, dict) else v)
+
+    def __str__(self):
+        return pformat(self.__dict__)
+
+    def __repr__(self):
+        return self.__str__()
+
+
+def load_config(path):
+    """
+    Convert yaml file to Obj.
+    """
+    f = open(path, 'r')
+    config = yaml.load(f, Loader=yaml.FullLoader)
+    config = Config(config)
+    return config
 
 
 #best
@@ -63,6 +93,8 @@ class AverageMeter():
         self.count = 0
 
     def update(self, val, n=1):
+        if np.isnan(val):
+            val = 1
         self.val = val
         self.sum += val * n
         self.count += n
@@ -89,6 +121,8 @@ def get_cindex(gt, pred):
     diff = pred.reshape((1, -1)) - pred.reshape((-1, 1))
     h_one = (diff > 0)
     h_half = (diff == 0)
+    # if np.sum(gt_mask)==0:
+    #     return 1
     ci = np.sum(gt_mask * h_one * 1.0 + gt_mask * h_half * 0.5) / np.sum(gt_mask)
 
     return ci
