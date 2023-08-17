@@ -42,7 +42,6 @@ def get_acc_ensemble(ensemble, criterion, test_loader):
                         np.array(data["edge_feature"], np.int32), \
                         np.array(data["target_feature"], np.float32), \
                         np.array(data["batch_info"], np.int32), \
-                        np.array(data["label"], np.float32), \
                         np.array(data["x_mask"], np.float32),]
         inputs_feat = [Tensor(feat) for feat in inputs_feats]
         inputs_feat = mutable(inputs_feat)
@@ -62,7 +61,7 @@ def get_acc_ensemble(ensemble, criterion, test_loader):
         cindex = get_cindex(np.array(data["label"], np.float32).reshape(-1), pred_prob)
         r2 = get_rm2(np.array(data["label"], np.float32).reshape(-1), pred_prob)
 
-        running_loss.update(np.array(loss).item(), data["label"].shape[0])
+        running_loss.update(loss.asnumpy(), data["label"].shape[0])
         running_cindex.update(cindex, data["label"].shape[0])
         running_r2.update(r2, data["label"].shape[0])
 
@@ -87,15 +86,22 @@ def main():
 
     # Load configs
     config = load_config(args.config)
-
-    logger = Logger(config)
-    logger.info(__file__)
-
-    context.set_context(device_id=config.test.device_id)
-
+    
     data_root = os.path.join(config.data.data_root, args.dataset)
     pretrain_models = config.test.pretrain_models
     pretrain_moe = config.test.pretrain_moe
+    
+    params = dict(
+        data_root=data_root,
+        save_dir=f"{data_root}/save/",
+        dataset=args.dataset,
+        batch_size=config.test.batch_size
+    )
+
+    logger = Logger(params)
+    logger.info(__file__)
+
+    context.set_context(device_id=config.test.device_id)
 
     test_set = GNNDataset(data_root, train=False, config=config)
     test_loader = test_set.create_iterator(num_epochs=1)
@@ -108,6 +114,7 @@ def main():
                         config.test.embedding_size, config.test.filter_num,
                         config.test.out_dim)]
 
+    
     criterion = nn.MSELoss()
 
     param_dict = mindspore.load_checkpoint(pretrain_models)
@@ -116,7 +123,7 @@ def main():
     mindspore.load_param_into_net(ensemble[1], param_dict)
 
     ensemble_loss, ensemble_cindex, ensemble_r2 = get_acc_ensemble(ensemble, criterion, test_loader)
-    msg0 = "ensemble_loss-%.4f, ensemble_cindex-%.4f, ensemble_r2-%.4f" % (ensemble_loss, ensemble_cindex, ensemble_r2)
+    msg0 = "ensemble_MSE-%.4f" % (ensemble_loss)
     logger.info(msg0)
 
 
