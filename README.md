@@ -81,5 +81,6 @@ option:
 - [MGraphDTA](https://github.com/guaguabujianle/MGraphDTA)
 - [DrugBAN](https://github.com/peizhenbai/DrugBAN/)
 - [DeepDTA](https://github.com/hkmztrk/DeepDTA)
+- [BINDTI](https://github.com/plhhnu/BINDTI)
 
 我们感谢所有这些开源工具的贡献者和维护者!
